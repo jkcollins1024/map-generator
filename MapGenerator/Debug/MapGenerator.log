@@ -1,0 +1,58 @@
+﻿  Map.cpp
+C:\Code\MapGenerator\MapGenerator\Map.cpp(23,32): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+C:\Code\MapGenerator\MapGenerator\Map.cpp(123,20): warning C4018: '<': signed/unsigned mismatch
+C:\Code\MapGenerator\MapGenerator\Map.cpp(124,21): warning C4018: '<': signed/unsigned mismatch
+C:\Code\MapGenerator\MapGenerator\Map.cpp(132,11): warning C4018: '<': signed/unsigned mismatch
+C:\Code\MapGenerator\MapGenerator\Map.cpp(138,11): warning C4018: '<': signed/unsigned mismatch
+C:\Code\MapGenerator\MapGenerator\Map.cpp(167,20): warning C4018: '<': signed/unsigned mismatch
+C:\Code\MapGenerator\MapGenerator\Map.cpp(172,21): warning C4018: '<': signed/unsigned mismatch
+C:\Code\MapGenerator\MapGenerator\Map.cpp(176,37): warning C4244: 'argument': conversion from 'T' to 'const unsigned int', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Code\MapGenerator\MapGenerator\Map.cpp(176,45): warning C4244: 'argument': conversion from 'T' to 'const unsigned int', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Code\MapGenerator\MapGenerator\Map.cpp(178,18): warning C4244: 'argument': conversion from 'T' to 'const unsigned int', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Code\MapGenerator\MapGenerator\Map.cpp(178,26): warning C4244: 'argument': conversion from 'T' to 'const unsigned int', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Code\MapGenerator\MapGenerator\Map.cpp(178,45): warning C4244: 'argument': conversion from 'T' to 'const unsigned int', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Code\MapGenerator\MapGenerator\Map.cpp(178,53): warning C4244: 'argument': conversion from 'T' to 'const unsigned int', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Code\MapGenerator\MapGenerator\Map.cpp(179,35): warning C4244: 'argument': conversion from 'T' to 'int', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Code\MapGenerator\MapGenerator\Map.cpp(180,18): warning C4244: 'argument': conversion from 'T' to 'const unsigned int', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Code\MapGenerator\MapGenerator\Map.cpp(180,26): warning C4244: 'argument': conversion from 'T' to 'const unsigned int', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Code\MapGenerator\MapGenerator\Map.cpp(210,26): warning C4018: '>=': signed/unsigned mismatch
+C:\Code\MapGenerator\MapGenerator\Map.cpp(210,50): warning C4018: '>=': signed/unsigned mismatch
+C:\Code\MapGenerator\MapGenerator\Map.cpp(242,20): warning C4018: '<': signed/unsigned mismatch
+C:\Code\MapGenerator\MapGenerator\Map.cpp(243,21): warning C4018: '<': signed/unsigned mismatch
+  MapGenerator.vcxproj -> C:\Code\MapGenerator\Debug\MapGenerator.exe
