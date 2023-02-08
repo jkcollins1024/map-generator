@@ -14,6 +14,18 @@ const float TILE_WIDTH = 64.0f;
 const int MAX_CASTLE_COUNT = 1;
 const int MAX_TOWN_COUNT = 4;
 
+struct ImpassableRegion {
+	int xBegin;
+	int xEnd;
+	int yBegin;
+	int yEnd;
+	int xEntrance;
+	int yEntrance;
+	TerrainType type;
+
+	ImpassableRegion(int xBegin, int xEnd, int yBegin, int yEnd, int xEntrance, int yEntrance, TerrainType terrainType) : xBegin(xBegin), xEnd(xEnd), yBegin(yBegin), yEnd(yEnd), xEntrance(xEntrance), yEntrance(yEntrance), type(terrainType) {}
+};
+
 Map::Map(int height, int width) {
 	/*_spriteBatch.init();
 	_spriteBatch.begin();
@@ -21,15 +33,66 @@ Map::Map(int height, int width) {
 	JCEngine::ColorRGBA8 tileColor{ 255, 255, 255, 255 };*/
 
 	std::mt19937 randomEngine(time(nullptr));
-	std::uniform_int_distribution<int> randomx(0,5);
+	//std::uniform_int_distribution<int> randomx(0,5);
 
-	int maxImpassableCount = 200;
+	std::uniform_int_distribution<int> randomx(0, width - 1);
+	std::uniform_int_distribution<int> randomy(0, height - 1);
+	std::uniform_int_distribution<int> xSize(1, 6);
+	std::uniform_int_distribution<int> ySize(1, 6);
+	std::uniform_int_distribution<int> sideSelection(1, 4);
+
+	/*int maxImpassableCount = 200;
 
 	int castleCount = 0;
 	int townCount = 0;
 	int forestCount = 0;
 	int mountainCount = 0;
-	int waterCount = 0;
+	int waterCount = 0;*/
+
+	std::vector<ImpassableRegion> regions = std::vector<ImpassableRegion>();
+
+	for (int i = 1; i < 4; i++) {
+		for (int j = 0; j < 6; j++) {
+			int xBegin = randomx(randomEngine);
+			int yBegin = randomy(randomEngine);
+
+			int xEnd = xSize(randomEngine) + xBegin;
+			int yEnd = ySize(randomEngine) + yBegin;
+
+			if (xEnd >= width) {
+				xEnd = width - 1;
+			}
+
+			if (yEnd >= height) {
+				yEnd = height - 1;
+			}
+
+			int xEntrance = xBegin;
+			int yEntrance = yBegin;
+			int side = sideSelection(randomEngine);
+
+			std::uniform_int_distribution<int> xEntranceCoord(xBegin, xEnd);
+			std::uniform_int_distribution<int> yEntranceCoord(yBegin, yEnd);
+			switch (side) {
+				case 1:
+					yEntrance = yEntranceCoord(randomEngine);
+					break;
+				case 2:
+					yEntrance = yEnd;
+					xEntrance = xEntranceCoord(randomEngine);
+					break;
+				case 3:
+					xEntrance = xEnd;
+					yEntrance = yEntranceCoord(randomEngine);
+					break;
+				case 4:
+					xEntrance = xEntranceCoord(randomEngine);
+					break;
+			}
+
+			regions.push_back(ImpassableRegion(xBegin, xEnd, yBegin, yEnd, xEntrance, yEntrance, (TerrainType)i));
+		}
+	}
 
 	for (int y = 0; y < height; y++) {
 		std::vector<TerrainTile> tiles = std::vector<TerrainTile>();
@@ -39,8 +102,46 @@ Map::Map(int height, int width) {
 				tiles.push_back(GrassTile(x, y));
 				continue;
 			}
+			
+			TerrainType newTileType = TerrainType::GRASS;
 
-			int randomTerrainType = randomx(randomEngine);
+			for (int i = 0; i < regions.size(); i++) {
+				ImpassableRegion curr = regions[i];
+				if (curr.xBegin <= x && curr.xEnd >= x && curr.yBegin <= y && curr.yEnd >= y) {
+					newTileType = curr.type;
+					break;
+				}
+			}
+
+			switch (newTileType) {
+			case TerrainType::FOREST:
+				tiles.push_back(ForestTile(x, y));
+				break;
+			case TerrainType::MOUNTAIN:
+				tiles.push_back(MountainTile(x, y));
+				break;
+			case TerrainType::WATER:
+				tiles.push_back(WaterTile(x, y));
+				break;
+			/*case TerrainType::CASTLE:
+				tiles.push_back(CastleTile(x, y));
+				break;
+			case TerrainType::TOWN:
+				if (townCount < MAX_TOWN_COUNT) {
+					tiles.push_back(TownTile(x, y));
+					townCount++;
+				}
+				else {
+					tiles.push_back(GrassTile(x, y));
+				}
+				break;*/
+			case TerrainType::GRASS:
+			default:
+				tiles.push_back(GrassTile(x, y));
+				break;
+			}
+
+			/*int randomTerrainType = randomx(randomEngine);
 			
 			switch ((TerrainType)randomTerrainType) {
 				case TerrainType::FOREST:
@@ -92,7 +193,7 @@ Map::Map(int height, int width) {
 				default:
 					tiles.push_back(GrassTile(x, y));
 					break;
-			}
+			}*/
 
 			/*glm::vec4 positionRect(x * TILE_WIDTH, y * TILE_WIDTH, TILE_WIDTH, TILE_WIDTH);
 			_spriteBatch.draw(positionRect, newTile->getUV(), newTile->getTexture().id, 0.0f, tileColor);*/
@@ -101,138 +202,40 @@ Map::Map(int height, int width) {
 		_mapData.push_back(tiles);
 	}
 
-	/*_spriteBatch.end();*/
+	//add towns and castle
+	for (int i = 0; i < MAX_TOWN_COUNT; i++) {
+		int xCoord = randomx(randomEngine);
+		int yCoord = randomy(randomEngine);
+
+		while (_mapData[yCoord][xCoord].getTerrainType() != TerrainType::GRASS) {
+			xCoord = randomx(randomEngine);
+			yCoord = randomy(randomEngine);
+		}
+
+		_mapData[yCoord][xCoord] = TownTile(xCoord, yCoord);
+	}
+
+	int xCoord = randomx(randomEngine);
+	int yCoord = randomy(randomEngine);
+
+	while (_mapData[yCoord][xCoord].getTerrainType() != TerrainType::GRASS) {
+		xCoord = randomx(randomEngine);
+		yCoord = randomy(randomEngine);
+	}
+
+	_mapData[yCoord][xCoord] = CastleTile(xCoord, yCoord);
+
+	//add impassable region entrances
+	std::uniform_int_distribution<int> side(1, 4);
+	for (int i = 0; i < regions.size(); i++) {
+		ImpassableRegion curr = regions[i];
+		
+		_mapData[curr.yEntrance][curr.xEntrance].addEntrance();
+	}
 }
 
 Map::~Map() {
 
-}
-
-void Map::makeMapTraversible() {
-	TerrainTile curr = _mapData[0][0];
-
-	curr.setTraversalDistance(0);
-
-	traverseFromCurrentLocation(0, 0, 1);
-
-	//move traversible tiles that can't be accessed
-	std::vector<glm::vec4> inaccessibleTraversibleTiles = std::vector<glm::vec4>();
-	std::vector<glm::vec4> accessibleNonTraversibleTiles = std::vector<glm::vec4>();
-
-	//register traversible tiles that are inaccessible
-	for (int y = 0; y < _mapData.size(); y++) {
-		for (int x = 0; x < _mapData[y].size(); x++) {
-			TerrainTile curr = _mapData[y][x];
-
-			if (curr.getTraversalDistance() >= 0)
-				continue;
-
-			if (!curr.getIsPassable()) {
-				//check up
-				if (y < _mapData.size() - 1 && _mapData[y + 1][x].getIsPassable()) {
-					accessibleNonTraversibleTiles.push_back(glm::vec4(x, y, (int)curr.getTerrainType(), _mapData[y + 1][x].getTraversalDistance() + 1));
-					continue;
-				}
-
-				//check right
-				if (x < _mapData[y].size() - 1 && _mapData[y][x + 1].getIsPassable()) {
-					accessibleNonTraversibleTiles.push_back(glm::vec4(x, y, (int)curr.getTerrainType(), _mapData[y][x + 1].getTraversalDistance() + 1));
-					continue;
-				}
-
-				//check down
-				if (y > 0 && _mapData[y - 1][x].getIsPassable()) {
-					accessibleNonTraversibleTiles.push_back(glm::vec4(x, y, (int)curr.getTerrainType(), _mapData[y - 1][x].getTraversalDistance() + 1));
-					continue;
-				}
-
-				//check left
-				if (x > 0 && _mapData[y][x - 1].getIsPassable()) {
-					accessibleNonTraversibleTiles.push_back(glm::vec4(x, y, (int)curr.getTerrainType(), _mapData[y][x - 1].getTraversalDistance() + 1));
-					continue;
-				}
-			}
-
-			//grab the non-traversible borders, and add to inaccessible tile list
-			if (x > 0) {
-				inaccessibleTraversibleTiles.push_back(glm::vec4(x, y, (int)_mapData[x - 1][y].getTerrainType(), -1));
-			}
-			else {
-				inaccessibleTraversibleTiles.push_back(glm::vec4(x, y, (int)_mapData[x + 1][y].getTerrainType(), -1));
-			}
-		}
-	}
-
-	//switch tiles that need to be switched
-	for (int x = 0; x < inaccessibleTraversibleTiles.size(); x++) {
-		glm::vec4 curr = inaccessibleTraversibleTiles[x];
-
-		int accessibleTileToErase = -1;
-
-		for (int y = 0; y < accessibleNonTraversibleTiles.size(); y++) {
-			if (accessibleNonTraversibleTiles[y].z == curr.z) {
-				glm::vec4 swap = accessibleNonTraversibleTiles[y];
-
-				TerrainTile temp = _mapData[curr.y][curr.x];
-
-				_mapData[curr.y][curr.x] = _mapData[swap.y][swap.x];
-				temp.setTraversalDistance(swap.w);
-				_mapData[swap.y][swap.x] = temp;
-
-				accessibleTileToErase = y;
-				break;
-			}
-		}
-
-		if (accessibleTileToErase > 0) {
-			accessibleNonTraversibleTiles.erase(accessibleNonTraversibleTiles.begin() + accessibleTileToErase);
-		}		
-
-		/*auto iterator = std::find_if(accessibleNonTraversibleTiles.begin(), accessibleNonTraversibleTiles.end(), [curr](glm::vec4 vec) { return vec.z == curr.z;});*/
-
-		//if (*iterator != *accessibleNonTraversibleTiles.end()) {
-		//	TerrainTile temp = _mapData[curr.y][curr.x];
-
-		//	_mapData[curr.y][curr.x] = _mapData[iterator->y][iterator->x];
-		//	temp.setTraversalDistance(iterator->w);
-		//	_mapData[iterator->y][iterator->x] = temp;
-
-		//	//std::swap(_mapData[curr.y][curr.x], _mapData[iterator->y][iterator->x]);
-		//	//_mapData[iterator->y][iterator->x].setTraversalDistance(iterator->w);
-		//}
-	}
-
-	//add castle and town tiles after, maybe?
-
-	//add entry points to impassable sections
-}
-
-void Map::traverseFromCurrentLocation(int x, int y, int distance) {
-	//check to see if we're still on map
-	if (x < 0 || y < 0 || y >= _mapData.size() || x >= _mapData[y].size())
-		return;
-
-	TerrainTile curr = _mapData[y][x];
-
-	//just return if we're on an impassable tile or new distance is greater than the current distance
-	if (!curr.getIsPassable() || (curr.getTraversalDistance() > 0 && distance > curr.getTraversalDistance()))
-		return;
-
-	//set new traversal distance if we can
-	if (curr.getIsPassable() && curr.getTraversalDistance() > distance)
-		curr.setTraversalDistance(distance);
-
-	//check up
-	traverseFromCurrentLocation(x, y + 1, distance + 1);
-
-	//check right
-	traverseFromCurrentLocation(x + 1, y, distance + 1);
-
-	//check down
-	traverseFromCurrentLocation(x, y - 1, distance + 1);
-
-	//check left
-	traverseFromCurrentLocation(x - 1, y, distance + 1);
 }
 
 void Map::draw() {

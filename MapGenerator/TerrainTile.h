@@ -14,7 +14,7 @@ class TerrainTile {
 		TerrainTile(int horizontalPosition, int verticalPosition);
 		~TerrainTile();
 
-		void setTraversalDistance(int traversalDistance) { _traversalDistance = traversalDistance; };
+		void setTraversalDistance(int traversalDistance);
 
 		void draw(JCEngine::SpriteBatch& spriteBatch);
 
@@ -23,6 +23,8 @@ class TerrainTile {
 		glm::vec4 getUV() const { return _uv; };
 		JCEngine::GLTexture getTexture() const { return _texture; };
 		int getTraversalDistance() const { return _traversalDistance; };
+
+		void addEntrance();
 
 	protected:
 		glm::vec2 _position;
