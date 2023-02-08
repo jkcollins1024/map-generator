@@ -73,8 +73,6 @@ void MainGame::initMap() {
 	_camera.Update();
 
 	draw();
-
-	_map.makeMapTraversible();
 }
 
 void MainGame::initShaders() {
@@ -87,11 +85,6 @@ void MainGame::initShaders() {
 
 void MainGame::gameLoop() {
 	while (_state == GameState::PLAY) {
-		/*draw();
-
-		std::printf("drawn");
-
-		Sleep(2000);*/
 
 		_camera.SetScale(.4);
 
@@ -100,20 +93,6 @@ void MainGame::gameLoop() {
 		_camera.Update();
 
 		draw();
-
-		/*std::printf("scaled 1");
-
-		Sleep(2000);
-
-		_camera.SetScale(10);
-
-		_camera.Update();
-
-		draw();
-
-		std::printf("scaled 2");
-
-		Sleep(2000);*/
 	}
 }
 
