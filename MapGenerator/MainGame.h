@@ -12,15 +12,20 @@
 #include <JCEngine\Timing.h>
 #include <glm/glm.hpp>
 
-//#include "Actor.h"
-//#include "Bullet.h"
-//
+#include "Actor.h"
+#include "Player.h"
+#include "Human.h"
 #include "Map.h"
 
 
 enum class GameState {
 	PLAY,
 	EXIT
+};
+
+enum class CameraState {
+	PLAYER,
+	MAP
 };
 
 class MainGame
@@ -36,6 +41,10 @@ private:
 	int _screenHeight;
 	GameState _state;
 	int _currentLevel;
+	float _fullMapCameraScale;
+	glm::vec2 _fullMapCameraPosition;
+	float _playerCameraScale;
+	CameraState _cameraState;
 
 	JCEngine::Window _window;
 	JCEngine::GLSLProgram _shaderProgram;
@@ -51,10 +60,10 @@ private:
 	JCEngine::SpriteBatch _hudSpriteBatch;
 	JCEngine::Camera2D _hudCamera;
 
-	//std::vector<Actor*> _actors;
+	std::vector<Actor*> _actors;
 	//std::vector<Bullet*> _bullets;
 	Map _map;
-	//Player _player;
+	Player _player;
 
 	//initializes game systems
 	void initSystems();
@@ -71,12 +80,10 @@ private:
 	//loop to execute game logic
 	void gameLoop();
 
-	void checkVictory();
-
 	void updateAgents(float deltaTime);
+
+	void toggleMapView();
 
 	//draws the game
 	void draw();
-
-	void drawHUD();
 };

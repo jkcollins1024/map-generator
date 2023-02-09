@@ -11,8 +11,6 @@
 #include <ctime>
 
 const float TILE_WIDTH = 64.0f;
-const int MAX_CASTLE_COUNT = 1;
-const int MAX_TOWN_COUNT = 4;
 
 struct ImpassableRegion {
 	int xBegin;
@@ -27,13 +25,8 @@ struct ImpassableRegion {
 };
 
 Map::Map(int height, int width) {
-	/*_spriteBatch.init();
-	_spriteBatch.begin();
-
-	JCEngine::ColorRGBA8 tileColor{ 255, 255, 255, 255 };*/
 
 	std::mt19937 randomEngine(time(nullptr));
-	//std::uniform_int_distribution<int> randomx(0,5);
 
 	std::uniform_int_distribution<int> randomx(0, width - 1);
 	std::uniform_int_distribution<int> randomy(0, height - 1);
@@ -41,18 +34,12 @@ Map::Map(int height, int width) {
 	std::uniform_int_distribution<int> ySize(1, 6);
 	std::uniform_int_distribution<int> sideSelection(1, 4);
 
-	/*int maxImpassableCount = 200;
-
-	int castleCount = 0;
-	int townCount = 0;
-	int forestCount = 0;
-	int mountainCount = 0;
-	int waterCount = 0;*/
-
 	std::vector<ImpassableRegion> regions = std::vector<ImpassableRegion>();
 
+	int regionCount = width / 5;
+
 	for (int i = 1; i < 4; i++) {
-		for (int j = 0; j < 6; j++) {
+		for (int j = 0; j < regionCount; j++) {
 			int xBegin = randomx(randomEngine);
 			int yBegin = randomy(randomEngine);
 
@@ -123,87 +110,18 @@ Map::Map(int height, int width) {
 			case TerrainType::WATER:
 				tiles.push_back(WaterTile(x, y));
 				break;
-			/*case TerrainType::CASTLE:
-				tiles.push_back(CastleTile(x, y));
-				break;
-			case TerrainType::TOWN:
-				if (townCount < MAX_TOWN_COUNT) {
-					tiles.push_back(TownTile(x, y));
-					townCount++;
-				}
-				else {
-					tiles.push_back(GrassTile(x, y));
-				}
-				break;*/
 			case TerrainType::GRASS:
 			default:
 				tiles.push_back(GrassTile(x, y));
 				break;
 			}
-
-			/*int randomTerrainType = randomx(randomEngine);
-			
-			switch ((TerrainType)randomTerrainType) {
-				case TerrainType::FOREST:
-					if (forestCount < maxImpassableCount) {
-						tiles.push_back(ForestTile(x, y));
-						forestCount++;
-					}
-					else {
-						tiles.push_back(GrassTile(x, y));
-					}
-					break;
-				case TerrainType::MOUNTAIN:
-					if (mountainCount < maxImpassableCount) {
-						tiles.push_back(MountainTile(x, y));
-						mountainCount++;
-					}
-					else {
-						tiles.push_back(GrassTile(x, y));
-					}
-					break;
-				case TerrainType::WATER:
-					if (waterCount < maxImpassableCount) {
-						tiles.push_back(WaterTile(x, y));
-						waterCount++;
-					}
-					else {
-						tiles.push_back(GrassTile(x, y));
-					}
-					break;
-				case TerrainType::CASTLE:
-					if (castleCount < MAX_CASTLE_COUNT) {
-						tiles.push_back(CastleTile(x, y));
-						castleCount++;
-					}
-					else {
-						tiles.push_back(GrassTile(x, y));
-					}
-					break;
-				case TerrainType::TOWN:
-					if (townCount < MAX_TOWN_COUNT) {
-						tiles.push_back(TownTile(x, y));
-						townCount++;
-					}
-					else {
-						tiles.push_back(GrassTile(x, y));
-					}
-					break;
-				case TerrainType::GRASS:
-				default:
-					tiles.push_back(GrassTile(x, y));
-					break;
-			}*/
-
-			/*glm::vec4 positionRect(x * TILE_WIDTH, y * TILE_WIDTH, TILE_WIDTH, TILE_WIDTH);
-			_spriteBatch.draw(positionRect, newTile->getUV(), newTile->getTexture().id, 0.0f, tileColor);*/
 		}
 
 		_mapData.push_back(tiles);
 	}
 
 	//add towns and castle
-	for (int i = 0; i < MAX_TOWN_COUNT; i++) {
+	for (int i = 0; i < regionCount; i++) {
 		int xCoord = randomx(randomEngine);
 		int yCoord = randomy(randomEngine);
 
@@ -218,6 +136,7 @@ Map::Map(int height, int width) {
 	int xCoord = randomx(randomEngine);
 	int yCoord = randomy(randomEngine);
 
+	//single castle for now
 	while (_mapData[yCoord][xCoord].getTerrainType() != TerrainType::GRASS) {
 		xCoord = randomx(randomEngine);
 		yCoord = randomy(randomEngine);

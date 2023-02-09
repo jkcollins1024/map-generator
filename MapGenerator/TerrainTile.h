@@ -4,7 +4,6 @@
 #include <JCEngine/SpriteBatch.h>
 #include <JCEngine/GLTexture.h>
 #include <JCEngine/InputManager.h>
-#include <Zombies\Gun.h>
 #include <JCEngine\Camera2D.h>
 
 enum class TerrainType { GRASS, WATER, MOUNTAIN, FOREST, TOWN, CASTLE };

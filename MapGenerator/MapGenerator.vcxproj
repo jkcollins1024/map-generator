@@ -72,8 +72,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Code\Zombies\;$(SolutionDir)dependencies/include/;$(SolutionDir);$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Code\Zombies\Debug;$(SolutionDir)debug;$(SolutionDir)dependencies/lib/debug/;$(SolutionDir);$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Code\Zombies\JCEngine;$(SolutionDir)dependencies/include/;$(SolutionDir);$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)debug;$(SolutionDir)dependencies/lib/debug/;$(SolutionDir);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -147,24 +147,30 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Actor.cpp" />
     <ClCompile Include="CastleTile.cpp" />
     <ClCompile Include="ForestTile.cpp" />
     <ClCompile Include="GrassTile.cpp" />
+    <ClCompile Include="Human.cpp" />
     <ClCompile Include="MainGame.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="MapGenerator.cpp" />
     <ClCompile Include="MountainTile.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="TerrainTile.cpp" />
     <ClCompile Include="TownTile.cpp" />
     <ClCompile Include="WaterTile.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Actor.h" />
     <ClInclude Include="CastleTile.h" />
     <ClInclude Include="ForestTile.h" />
     <ClInclude Include="GrassTile.h" />
+    <ClInclude Include="Human.h" />
     <ClInclude Include="MainGame.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="MountainTile.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="TerrainTile.h" />
     <ClInclude Include="TownTile.h" />
     <ClInclude Include="WaterTile.h" />
