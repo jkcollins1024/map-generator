@@ -1,9 +1,6 @@
 #include "MainGame.h"
 #include <JCEngine\JCEngine.h>
 
-//#include "Actor.h"
-//#include "Gun.h"
-
 #include <JCEngine\ResourceManager.h>
 #include <math.h>
 #include <iostream>
